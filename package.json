@@ -1,0 +1,12 @@
+{
+  "name": "cloudprnt-emulator",
+  "version": "0.0.0",
+  "license": "MIT",
+  "repository": "LinusU/cloudprnt-emulator",
+  "type": "module",
+  "bin": "./index.js",
+  "dependencies": {
+    "neodoc": "^2.0.2",
+    "node-fetch": "^3.0.0"
+  }
+}
