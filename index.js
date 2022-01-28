@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { writeFileSync } from 'fs'
 import neodoc from 'neodoc'
 import fetch from 'node-fetch'
