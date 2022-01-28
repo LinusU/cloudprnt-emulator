@@ -22,7 +22,8 @@ options:
  * @returns {Promise<{ jobReady: boolean, jobToken?: string, mediaTypes?: string[] }>}
  */
 async function post (url) {
-  const response = await fetch(url, { method: 'POST' })
+  const body = JSON.stringify({ printingInProgress: false, statusCode: '200%20OK' })
+  const response = await fetch(url, { body, headers: { 'Content-Type': 'application/json' }, method: 'POST' })
 
   if (!response.ok) {
     throw new Error(`POST request to ${url} failed: ${response.status} ${response.statusText}`)
