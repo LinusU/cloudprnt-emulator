@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import lodepng from '@cwasm/lodepng'
+import rotate from 'rotate-image-data'
 import { writeFileSync } from 'fs'
 import neodoc from 'neodoc'
 import fetch from 'node-fetch'
@@ -15,6 +17,7 @@ options:
   <poll-url>                   A URL that the client will poll regularly through an http POST.
   --help                       Show this help, then exit.
   --poll-interval=INTERVAL     The client will connect to the server at this interval to provide the server with live status updates, and check for print jobs or client action requests [default: 5].
+  --rotate180                  Rotate the image 180 degrees.
 `
 
 /**
@@ -95,8 +98,15 @@ try {
           throw new Error(`Unsupported media types: ${status.mediaTypes}`)
         }
 
-        const imageData = await get(url, status.jobToken)
-        writeFileSync(`img-${new Date().toISOString().replace(/:/g, '.')}.png`, imageData)
+        let pngData = await get(url, status.jobToken)
+
+        if (args['--rotate180']) {
+          let imageData = lodepng.decode(pngData)
+          imageData = rotate(imageData, 180)
+          pngData = lodepng.encode(imageData)
+        }
+
+        writeFileSync(`img-${new Date().toISOString().replace(/:/g, '.')}.png`, pngData)
         code = '200'
       } finally {
         await delete_(url, code, status.jobToken)

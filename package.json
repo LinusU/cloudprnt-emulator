@@ -6,7 +6,9 @@
   "type": "module",
   "bin": "./index.js",
   "dependencies": {
+    "@cwasm/lodepng": "^0.1.7",
     "neodoc": "^2.0.2",
-    "node-fetch": "^3.0.0"
+    "node-fetch": "^3.0.0",
+    "rotate-image-data": "^0.1.0"
   }
 }
