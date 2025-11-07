@@ -7,6 +7,8 @@ import neodoc from 'neodoc'
 import fetch from 'node-fetch'
 import { setTimeout } from 'timers/promises'
 
+import { convertStarprntToPng } from './lib/starprnt.js'
+
 const PRINTER_MAC = '00:00:00:00:00:00'
 
 const usage = `
@@ -42,9 +44,9 @@ async function post (url) {
  * @param {string} [jobToken]
  * @returns {Promise<Buffer>}
  */
-async function get (url, jobToken) {
+async function get (url, jobToken, type) {
   const newUrl = new URL(url)
-  newUrl.searchParams.append('type', 'image/png')
+  newUrl.searchParams.append('type', type)
   newUrl.searchParams.append('mac', PRINTER_MAC)
   if (jobToken) newUrl.searchParams.append('token', jobToken)
   const response = await fetch(newUrl, { method: 'GET' })
@@ -95,12 +97,17 @@ try {
       let code = '500'
 
       try {
-        if (status.mediaTypes && !status.mediaTypes.includes('image/png')) {
+        if (status.mediaTypes && !(status.mediaTypes.includes('application/vnd.star.starprnt') || status.mediaTypes.includes('image/png'))) {
           code = '510'
           throw new Error(`Unsupported media types: ${status.mediaTypes}`)
         }
 
-        let pngData = await get(url, status.jobToken)
+        let pngData
+        if (status.mediaTypes.includes('application/vnd.star.starprnt')) {
+          pngData = convertStarprntToPng(await get(url, status.jobToken, 'application/vnd.star.starprnt'))
+        } else {
+          pngData = await get(url, status.jobToken, 'image/png')
+        }
 
         if (args['--rotate180']) {
           let imageData = lodepng.decode(pngData)
