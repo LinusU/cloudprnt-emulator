@@ -7,10 +7,11 @@ import neodoc from 'neodoc'
 import fetch from 'node-fetch'
 import { setTimeout } from 'timers/promises'
 import mqtt from 'mqtt'
+import os from 'os'
 
 import { convertStarprntToPng } from './lib/starprnt.js'
 
-const PRINTER_MAC = '00:00:00:00:00:00'
+const PRINTER_MAC = os.networkInterfaces().en0?.[0]?.mac || '00:00:00:00:00:00'
 
 const usage = `
 CloudPRNT Emulator
