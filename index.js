@@ -7,6 +7,8 @@ import neodoc from 'neodoc'
 import fetch from 'node-fetch'
 import { setTimeout } from 'timers/promises'
 
+const PRINTER_MAC = '00:00:00:00:00:00'
+
 const usage = `
 CloudPRNT Emulator
 
@@ -43,7 +45,7 @@ async function post (url) {
 async function get (url, jobToken) {
   const newUrl = new URL(url)
   newUrl.searchParams.append('type', 'image/png')
-  newUrl.searchParams.append('mac', '00:00:00:00:00:00')
+  newUrl.searchParams.append('mac', PRINTER_MAC)
   if (jobToken) newUrl.searchParams.append('token', jobToken)
   const response = await fetch(newUrl, { method: 'GET' })
 
@@ -63,7 +65,7 @@ async function get (url, jobToken) {
 async function delete_ (url, code, jobToken) {
   const newUrl = new URL(url)
   newUrl.searchParams.append('code', code)
-  newUrl.searchParams.append('mac', '00:00:00:00:00:00')
+  newUrl.searchParams.append('mac', PRINTER_MAC)
   if (jobToken) newUrl.searchParams.append('token', jobToken)
   const response = await fetch(newUrl, { method: 'DELETE' })
 
